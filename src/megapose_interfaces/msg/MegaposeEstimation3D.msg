@@ -1,0 +1,2 @@
+std_msgs/Header header
+megapose_interfaces/Estimation3D estimation3d
