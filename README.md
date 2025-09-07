@@ -23,7 +23,7 @@ cd ~/megapose_ros/src
 git clone https://github.com/igkini/megapose_ros.git
 ```
 
-#### 2. Download the megapose [models](https://www.paris.inria.fr/archive_ylabbeprojectsdata/megapose/megapose-models/) and place them under `src/megapose/megapose/local_data/megapose-models/`
+**2.** Download the megapose [models](https://www.paris.inria.fr/archive_ylabbeprojectsdata/megapose/megapose-models/) and place them under `src/megapose/megapose/local_data/megapose-models/`
 
 #
 
