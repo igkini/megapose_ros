@@ -11,7 +11,6 @@ This package provides:
 ## Prerequisites
 - ROS2 Jazzy (only tested version).
 - CUDA-capable GPU with at least 6GB of VRAM, but **12BG** is recommended.
-- CUDA 12.6 was used during development and testing(other CUDA versions might work as well).
 - Realsense or Zed SDK installed, or a ros2 bag file.
 
 
@@ -106,7 +105,7 @@ git clone https://github.com/igkini/megapose_ros.git
 
 ### 1. Build the Package
 ```bash
-cd ~/ros2_ws
+cd ~/megapose_ros
 colcon build
 source install/setup.bash 
 ```
