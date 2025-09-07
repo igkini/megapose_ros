@@ -108,7 +108,7 @@ git clone https://github.com/igkini/megapose_ros.git
 ```bash
 cd ~/ros2_ws
 colcon build
-source install/setup.bash
+source install/setup.bash 
 ```
 
 ### 2. Object Meshes
