@@ -20,9 +20,9 @@ This package provides:
 
 ```bash
 git clone https://github.com/igkini/megapose_ros.git
+cd ~/megapose_ros
 ```
 
-**2.** Download the megapose [models](https://www.paris.inria.fr/archive_ylabbeprojectsdata/megapose/megapose-models/) and place them under `src/megapose/megapose/local_data/megapose-models/`
 
 #
 
@@ -50,7 +50,7 @@ git clone https://github.com/igkini/megapose_ros.git
   ```  
 3. Allow local Docker containers to connect to your X server:
   ```bash 
-    docker run --gpus all -it --privileged -e DISPLAY=$DISPLAY -e NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics -v /tmp/.X11-unix:/tmp/.X11-unix:rw -v "$(pwd)":/workspace megapose_ros
+    docker run --gpus all -it --privileged -e DISPLAY=$DISPLAY -e NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics -v /tmp/.X11-unix:/tmp/.X11-unix:rw -v "$(pwd)":/megapose_ros megapose_ros
   ```
 
 #
@@ -97,12 +97,21 @@ git clone https://github.com/igkini/megapose_ros.git
 
 ### 1. Build the Package
 ```bash
-cd ~/megapose_ros
 colcon build
 source install/setup.bash 
 ```
 
-### 2. Object Meshes
+### 2. Download models
+
+Download the megapose using:
+
+```bash
+python3 -m megapose.scripts.download --megapose_models
+```
+
+Or download them manually in the [url](https://www.paris.inria.fr/archive_ylabbeprojectsdata/megapose/megapose-models/) and place them under `src/megapose/megapose/local_data/megapose-models/`
+
+### 3. Object Meshes
 The 3D meshes for objects are provided in the `megapose/megapose/local_data/custom_data/[label]/meshes/[label]/` directory. These meshes are used by MegaPose for pose estimation. The folder names within `custom_data/` must exactly match the class labels output by your YOLO detection model. For example, if YOLO detects an object with the label "class_3", MegaPose will look for the corresponding 3D mesh in `megapose/local_data/custom_data/class_3/meshes/class_3/.obj, .mtl, .png`.
 
 #### Custom Mesh Requirements
@@ -115,7 +124,7 @@ The 3D meshes for objects are provided in the `megapose/megapose/local_data/cust
   - Ensure texture file path is correctly referenced in the `.mtl` file
   - **Performance optimization**: Remeshing CAD models with voxel > 0.6 will significantly increase resource capabilities
 
-### 3. Camera Setup
+### 4. Camera Setup
 The default configuration uses ZED 2i camera topics. Choose your camera and modify topics accordingly in the launch file:
 
 #### ZED Camera
@@ -130,14 +139,14 @@ ros2 launch zed_wrapper zed2i.launch.py
 ros2 launch realsense2_camera rs_launch.py
 ```
 
-### 3. YOLO Detection Setup
+### 5. YOLO Detection Setup
 You must train a YOLO model for your object and run the YOLO ROS node that publishes to the `/yolo/detections` topic using the `yolo_msgs/DetectionArray` message type.
 ```bash
 # Launch your YOLO detection
 ros2 launch yolo_bringup yolov11.launch.py
 ```
 
-### 4. Launch MegaPose
+### 6. Launch MegaPose
 ```bash
 # Launch with default parameters (ZED 2i)
 ros2 launch megapose_ros megapose_launch.launch.py
@@ -148,7 +157,7 @@ ros2 launch megapose_ros megapose_launch.launch.py \
  resize_factor:=2
 ```
 
-### 5. Trigger Inference
+### 7. Trigger Inference
 ```bash
 # Run inference using the first detected label by default
 ros2 service call /run_inference megapose_interfaces/srv/LabelInference "{label: ''}"
@@ -157,7 +166,7 @@ ros2 service call /run_inference megapose_interfaces/srv/LabelInference "{label:
 ros2 service call /run_inference megapose_interfaces/srv/LabelInference "{label: 'port'}"
 ```
 
-### 6. Visualize
+### 8. Visualize
 
 To visualize the results run:
 
