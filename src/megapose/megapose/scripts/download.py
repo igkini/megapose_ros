@@ -22,12 +22,12 @@ import subprocess
 from pathlib import Path
 
 # MegaPose
-from megapose.config import LOCAL_DATA_DIR, PROJECT_DIR
+from megapose.config import LOCAL_DATA_DIR, PROJECT_DIR, ROOT_DIR
 from megapose.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-RCLONE_CFG_PATH = PROJECT_DIR / "rclone.conf"
+RCLONE_CFG_PATH = ROOT_DIR / "rclone.conf"
 RCLONE_ROOT = "inria_data:"
 
 

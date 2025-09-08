@@ -26,6 +26,7 @@ from ament_index_python.packages import get_package_share_directory
 PKG_DIR=Path(get_package_share_directory("megapose"))
 PKG_LOCAL_DATA_DIR=PKG_DIR/"local_data"
 
+ROOT_DIR=Path("src/megapose")
 PROJECT_DIR = Path("src/megapose/megapose")
 LOCAL_DATA_DIR = PROJECT_DIR / "local_data"
 BOP_DS_DIR = LOCAL_DATA_DIR / "bop_datasets"
