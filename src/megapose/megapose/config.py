@@ -23,7 +23,10 @@ import pandas as pd
 from joblib import Memory
 from ament_index_python.packages import get_package_share_directory
 
-PROJECT_DIR = Path(get_package_share_directory("megapose"))
+PKG_DIR=Path(get_package_share_directory("megapose"))
+PKG_LOCAL_DATA_DIR=PKG_DIR/"local_data"
+
+PROJECT_DIR = Path("src/megapose")
 LOCAL_DATA_DIR = PROJECT_DIR / "local_data"
 BOP_DS_DIR = LOCAL_DATA_DIR / "bop_datasets"
 NB_DATA_DIR = LOCAL_DATA_DIR / "notebook_data"

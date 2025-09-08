@@ -18,7 +18,7 @@ import numpy as np
 from cv_bridge import CvBridge
 import tf_transformations
  
-from megapose.config import LOCAL_DATA_DIR
+from megapose.config import PKG_LOCAL_DATA_DIR
 from megapose.datasets.scene_dataset import ObjectData
 from megapose.inference.types import ObservationTensor
 from megapose.inference.utils import make_detections_from_object_data
@@ -219,7 +219,7 @@ class MegaPoseNode(Node):
             else:
                 label_for_dir = filtered_detections[0]["label"]
             
-            example_dir = LOCAL_DATA_DIR / "custom_data" / label_for_dir
+            example_dir = PKG_LOCAL_DATA_DIR / "custom_data" / label_for_dir
             meshes_dir = example_dir / "meshes"
             if not meshes_dir.exists():
                 response.message = (
@@ -249,7 +249,7 @@ class MegaPoseNode(Node):
         return response
  
     def run_inference(self, detections_list, dir_label):
-        example_dir = LOCAL_DATA_DIR / "custom_data" / dir_label
+        example_dir = PKG_LOCAL_DATA_DIR / "custom_data" / dir_label
         example_dir.mkdir(parents=True, exist_ok=True)
         
         save_inputs(example_dir, self.rgb_image, self.camera_info_dict, detections_list)
