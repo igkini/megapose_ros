@@ -19,7 +19,6 @@ This package provides:
 ### 1. Clone the repository:
 
 ```bash
-cd ~/megapose_ros/src
 git clone https://github.com/igkini/megapose_ros.git
 ```
 
