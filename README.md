@@ -112,7 +112,14 @@ python3 -m megapose.scripts.download --megapose_models
 Or download them manually in the [url](https://www.paris.inria.fr/archive_ylabbeprojectsdata/megapose/megapose-models/) and place them under `src/megapose/megapose/local_data/megapose-models/`
 
 ### 3. Object Meshes
-The 3D meshes for objects are provided in the `megapose/megapose/local_data/custom_data/[label]/meshes/[label]/` directory. These meshes are used by MegaPose for pose estimation. The folder names within `custom_data/` must exactly match the class labels output by your YOLO detection model. For example, if YOLO detects an object with the label "class_3", MegaPose will look for the corresponding 3D mesh in `megapose/local_data/custom_data/class_3/meshes/class_3/.obj, .mtl, .png`.
+
+The 3D meshes for objects are provided in the `megapose/megapose/local_data/custom_data/[label]/meshes/[label]/` directory. To create the ```custom_data``` folder run:
+
+```bash
+mkdir -p src/megapose/megapose/local_data/custom_data
+```
+
+These meshes are used by MegaPose for pose estimation. The folder names within `custom_data/` must exactly match the class labels output by your YOLO detection model. For example, if YOLO detects an object with the label "class_3", MegaPose will look for the corresponding 3D mesh in `megapose/local_data/custom_data/class_3/meshes/class_3/.obj, .mtl, .png`.
 
 #### Custom Mesh Requirements
 - File format: `.obj` with accompanying `.mtl` and texture image files `.png, .jpeg, etc...`
@@ -149,9 +156,9 @@ ros2 launch yolo_bringup yolov11.launch.py
 ### 6. Launch MegaPose
 ```bash
 # Launch with default parameters (ZED 2i)
-ros2 launch megapose_ros megapose_launch.launch.py
+ros2 launch megapose megapose_launch.launch.py
 # Or with custom camera topics
-ros2 launch megapose_ros megapose_launch.launch.py \
+ros2 launch megapose megapose_launch.launch.py \
  rgb_image_topic:=/camera/color/image_raw \
  camera_info_topic:=/camera/color/camera_info \
  resize_factor:=2
