@@ -167,10 +167,10 @@ ros2 launch megapose megapose_launch.launch.py \
 ### 7. Trigger Inference
 ```bash
 # Run inference using the first detected label by default
-ros2 service call /run_inference megapose_interfaces/srv/LabelInference "{label: ''}"
+ros2 service call /run_inference megapose_interfaces/srv/MegaposeInference "{label: ''}"
 
 # Or specify a particular label
-ros2 service call /run_inference megapose_interfaces/srv/LabelInference "{label: 'port'}"
+ros2 service call /run_inference megapose_interfaces/srv/MegaposeInference "{label: 'port'}"
 ```
 
 ### 8. Visualize

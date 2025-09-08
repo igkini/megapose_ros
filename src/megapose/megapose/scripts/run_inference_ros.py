@@ -11,7 +11,7 @@ from types import SimpleNamespace
  
 from sensor_msgs.msg import Image, CameraInfo
 from yolo_msgs.msg import DetectionArray
-from megapose_interfaces.srv import LabelInference
+from megapose_interfaces.srv import MegaposeInference
  
 import torch
 import numpy as np
@@ -100,7 +100,7 @@ class MegaPoseNode(Node):
         self.create_subscription(DetectionArray, self.detection_topic, self.detection_cb, 10)
  
         self.inference_service = self.create_service(
-            LabelInference, self.service_name, self.inference_cb)
+            MegaposeInference, self.service_name, self.inference_cb)
  
         self.pose_pub = self.create_publisher(Detection3DArray, self.pose_output_topic, 10)
  

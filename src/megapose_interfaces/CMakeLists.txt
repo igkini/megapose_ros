@@ -14,7 +14,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Estimation3D.msg"
   "msg/MegaposeEstimation3D.msg"
-  "srv/LabelInference.srv"
+  "srv/MegaposeInference.srv"
   DEPENDENCIES std_msgs geometry_msgs
 )
 
