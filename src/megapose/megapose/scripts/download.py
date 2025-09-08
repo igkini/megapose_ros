@@ -22,7 +22,7 @@ import subprocess
 from pathlib import Path
 
 # MegaPose
-from megapose.config import LOCAL_DATA_DIR, PROJECT_DIR, ROOT_DIR
+from megapose.config import LOCAL_DATA_DIR, ROOT_DIR
 from megapose.utils.logging import get_logger
 
 logger = get_logger(__name__)
