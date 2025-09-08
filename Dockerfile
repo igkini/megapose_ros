@@ -51,7 +51,7 @@ RUN apt-get update && apt-get install -y rclone \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install megapose dependencies
-WORKDIR /megapose_ros_ws
+WORKDIR /megapose_ros
 
 COPY src/megapose/megapose/deps/bop_toolkit_challenge/ /opt/bop_toolkit_challenge/
 
