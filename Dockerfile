@@ -47,6 +47,9 @@ RUN apt-get update && apt-get install -y \
 
 ENV __GLX_VENDOR_LIBRARY_NAME=nvidia
 
+RUN apt-get update && apt-get install -y rclone \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Install megapose dependencies
 WORKDIR /megapose_ros_ws
 
