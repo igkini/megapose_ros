@@ -72,14 +72,7 @@ git clone https://github.com/igkini/megapose_ros.git
 
 > **Important:** You will need to use `--break-system-packages` when installing Python dependencies to the system path
 
-1. Install the main megapose package:
-    ```bash
-    cd megapose
-    pip install -e . --break-system-packages
-    cd ..
-    ```
-
-2. It is **recommended** to follow the usage steps up to: `ros2 launch megapose_ros megapose_launch.launch.py` and each time a missing module appears, run:
+1. It is **recommended** to follow the usage steps up to: `ros2 launch megapose_ros megapose_launch.launch.py` and each time a missing module appears, run:
     
     ```bash
     pip install [module_name] --break-system-packages
@@ -91,7 +84,7 @@ git clone https://github.com/igkini/megapose_ros.git
     pip install -r requirements-basic.txt --break-system-packages
     ```
     
-3. To resolve the `ModuleNotFoundError: No module named 'bop_toolkit_lib'` error, run:
+2. To resolve the `ModuleNotFoundError: No module named 'bop_toolkit_lib'` error, run:
     ```bash
     cd src/megapose/megapose/deps/bop_toolkit_challenge/
     pip install -e .
