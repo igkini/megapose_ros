@@ -25,7 +25,7 @@ from megapose.inference.utils import make_detections_from_object_data
 from megapose.utils.load_model import NAMED_MODELS, load_named_model
 from megapose.utils.logging import get_logger, set_logging_level
  
-from tf2_ros import StaticTransformBroadcaster
+from tf2_ros import StaticTransformBroadcaster, TransformBroadcaster
 from geometry_msgs.msg import TransformStamped
  
 from megapose.scripts.megapose_ros_utility import (
@@ -65,6 +65,7 @@ class MegaPoseNode(Node):
         self.depth_topic = self.get_parameter('depth_topic').get_parameter_value().string_value
         self.cropped = self.get_parameter('cropped').get_parameter_value().bool_value
 
+        
         if self.model_name not in NAMED_MODELS:
             self.get_logger().warn(
                 f"Unknown model_name='{self.model_name}', defaulting to 'megapose-1.0-RGB-multi-hypothesis'"
@@ -77,11 +78,12 @@ class MegaPoseNode(Node):
             self.get_logger().error("CUDA not available. MegaPose requires CUDA to run.")
             raise RuntimeError("CUDA is required for MegaPose inference but not available")
 
-        self.static_broadcaster = StaticTransformBroadcaster(self)
+        self.tf_broadcaster = TransformBroadcaster(self)
+        self.latest_tf = None
+        self.tf_timer=self.create_timer(0.5, self.republish_tf())
 
         os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
         self.get_logger().info("Enabled expandable segments for CUDA memory")
- 
 
         self.pose_estimator = None
         self.loaded_dir_label = None
@@ -124,7 +126,7 @@ class MegaPoseNode(Node):
     def depth_cb(self, msg):
         if msg.encoding == '32FC1':
             depth_raw = self.bridge.imgmsg_to_cv2(msg, desired_encoding='32FC1').astype(np.float32)
-            depth_m = depth_raw / 1000.0
+            depth = depth_raw
         # elif msg.encoding == '16UC1':
         #     depth_raw = self.bridge.imgmsg_to_cv2(msg, desired_encoding='16UC1').astype(np.uint16)
         #     depth_m = depth_raw.astype(np.float32) / 1000.0
@@ -137,24 +139,22 @@ class MegaPoseNode(Node):
                 self.get_logger().error(f"Failed to process depth image: {e}")
                 return
 
-        depth_m = np.nan_to_num(depth_m, nan=0.0, posinf=0.0, neginf=0.0)
-        depth_m[depth_m <= 0.0] = 0.0
+        depth = np.nan_to_num(depth, nan=0.0, posinf=0.0, neginf=0.0)
+        depth[depth <= 0.0] = 0.0
 
         if self.resize_factor != 1:
-            h, w = depth_m.shape[:2]
+            h, w = depth.shape[:2]
             new_w = int(w / self.resize_factor)
             new_h = int(h / self.resize_factor)
-            depth_m = cv2.resize(
-                depth_m,
+            depth = cv2.resize(
+                depth,
                 (new_w, new_h),
                 interpolation=cv2.INTER_NEAREST
             )
-
-        depth_mm = (depth_m * 1000.0).astype(np.float32)
         
-        if not depth_mm.flags['C_CONTIGUOUS']:
-            depth_mm = np.ascontiguousarray(depth_mm)
-        self.depth_image = depth_mm
+        if not depth.flags['C_CONTIGUOUS']:
+            depth = np.ascontiguousarray(depth)
+        self.depth_image = depth
 
     def camera_info_cb(self, msg):
         self.camera_info_dict = convert_camera_info(msg, self.resize_factor)
@@ -170,13 +170,13 @@ class MegaPoseNode(Node):
         
     def inference_cb(self, request, response):
         target_label = request.label if request.label else None
-        result = self.process_label(target_label)
+        result = self.process_pipeline(target_label)
         response.success = result.success
         response.message = result.message
         
         return response
         
-    def process_label(self, target_label=None):
+    def process_pipeline(self, target_label=None):
         response = SimpleNamespace(success=False, message='')
         
         if self.rgb_image is None or self.orig_shape is None:
@@ -347,8 +347,15 @@ class MegaPoseNode(Node):
         tf_stamped.transform.rotation.z = float(quaternion[2])
         tf_stamped.transform.rotation.w = float(quaternion[3])
 
-        self.static_broadcaster.sendTransform(tf_stamped)
+        self.tf_broadcaster.sendTransform(tf_stamped)
+        self.latest_tf= tf_stamped
         self.get_logger().info(f"Broadcast static TF: {tf_stamped.child_frame_id}")
+
+    def republish_tf(self):
+        if not self.latest_tf:
+            return
+        self.latest_tf.header.stamp=self.get_clock().now().to_msg()
+        self.tf_broadcaster.sendTransform(self.latest_tf)
 
     def destroy_node(self):
         if self.pose_estimator is not None:
