@@ -80,7 +80,7 @@ class MegaPoseNode(Node):
 
         self.tf_broadcaster = TransformBroadcaster(self)
         self.latest_tf = None
-        self.tf_timer=self.create_timer(0.5, self.republish_tf())
+        self.tf_timer=self.create_timer(0.5, self._republish_tf())
 
         os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
         self.get_logger().info("Enabled expandable segments for CUDA memory")
@@ -351,7 +351,7 @@ class MegaPoseNode(Node):
         self.latest_tf= tf_stamped
         self.get_logger().info(f"Broadcast static TF: {tf_stamped.child_frame_id}")
 
-    def republish_tf(self):
+    def _republish_tf(self):
         if not self.latest_tf:
             return
         self.latest_tf.header.stamp=self.get_clock().now().to_msg()
