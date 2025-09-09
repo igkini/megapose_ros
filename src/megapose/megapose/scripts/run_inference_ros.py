@@ -169,14 +169,14 @@ class MegaPoseNode(Node):
         self.yolo_detections_list = convert_yolo_detections(msg, cam_res, crop_size, self.resize_factor, self.cropped)
         
     def inference_cb(self, request, response):
-        target_label = request.label if request.label else None
-        result = self.process_pipeline(target_label)
+        requested_label = request.label if request.label else None
+        result = self.process_pipeline(requested_label)
         response.success = result.success
         response.message = result.message
         
         return response
         
-    def process_pipeline(self, target_label=None):
+    def process_pipeline(self, requested_label=None):
         response = SimpleNamespace(success=False, message='')
         
         if self.rgb_image is None or self.orig_shape is None:
@@ -196,26 +196,26 @@ class MegaPoseNode(Node):
             return response
  
         filtered_detections = self.yolo_detections_list
-        if target_label:
+        if requested_label:
             filtered_detections = [
-                d for d in self.yolo_detections_list if d["label"] == target_label
+                d for d in self.yolo_detections_list if d["label"] == requested_label
             ]
             if not filtered_detections:
-                response.message = f"No detections with label '{target_label}' found."
+                response.message = f"No detections with label '{requested_label}' found."
                 return response
-            self.get_logger().info(f"Label found '{target_label}'")
+            self.get_logger().info(f"Label found '{requested_label}'")
  
             if len(filtered_detections) > 1:
                 filtered_detections = [
                     max(filtered_detections, key=lambda d: d.get("score", 0.0))
                 ]
                 self.get_logger().info(
-                    f"Multiple detections for '{target_label}' – using highest score one."
+                    f"Multiple detections for '{requested_label}' – using highest score one."
                 )
 
         try:
-            if target_label:
-                label_for_dir = target_label
+            if requested_label:
+                label_for_dir = requested_label
             else:
                 label_for_dir = filtered_detections[0]["label"]
             
